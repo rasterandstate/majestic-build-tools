@@ -19,7 +19,10 @@ export interface SourceInput {
 	probe_state: 'ok' | 'failed' | 'unknown' | null;
 }
 
-/** Target device profile. Determines artifact kind and codec choices. */
+/**
+ * Target device profile. Determines artifact kind and codec choices.
+ * Profile semantics are tied to ARTIFACT_FORMAT_VERSION; changes require version bump.
+ */
 export interface TargetProfile {
 	/** Artifact kind: remux_fmp4_appletv, remux_fmp4_appletv_adaptive_*, transcode_fmp4_appletv, etc. */
 	kind: string;

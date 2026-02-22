@@ -5,7 +5,10 @@
  * Backend implementations must produce identical format.
  */
 
-/** Artifact format version. Bump on breaking changes to container, track mapping, or naming. */
+/**
+ * Artifact format version. Bump on breaking changes to container, track mapping, naming,
+ * or target profile semantics. Included in cache key; bumps invalidate cache reuse.
+ */
 export const ARTIFACT_FORMAT_VERSION = 1;
 
 /**

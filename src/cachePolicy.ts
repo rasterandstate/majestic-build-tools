@@ -5,7 +5,9 @@
  * Backend implementations must respect these rules.
  */
 
-/** Cache key components. Key = fingerprint + kind + optional track index. */
+import { ARTIFACT_FORMAT_VERSION } from './artifactSpec.js';
+
+/** Cache key components. Key = formatVersion + fingerprint + kind + optional track index. */
 export interface CacheKeyInput {
 	/** size:headHash:tailHash from identity fingerprint. */
 	fingerprintSize: number;
@@ -19,13 +21,15 @@ export interface CacheKeyInput {
 
 /**
  * Build cache key string for artifact lookup.
- * Format: {size}:{head}:{tail}{trackSuffix}
+ * Format: v{ARTIFACT_FORMAT_VERSION}:{size}:{head}:{tail}{trackSuffix}
  * Track suffix: :a{N} when audioTrackIndex > 0, else empty.
+ *
+ * ARTIFACT_FORMAT_VERSION is included so that format bumps invalidate cache reuse.
  */
 export function buildCacheKey(input: CacheKeyInput): string {
-	const { fingerprintSize, fingerprintHeadHash, fingerprintTailHash, kind: _kind, audioTrackIndex } = input;
+	const { fingerprintSize, fingerprintHeadHash, fingerprintTailHash, audioTrackIndex } = input;
 	const track = audioTrackIndex != null && audioTrackIndex > 0 ? `:a${audioTrackIndex}` : '';
-	return `${fingerprintSize}:${fingerprintHeadHash}:${fingerprintTailHash}${track}`;
+	return `v${ARTIFACT_FORMAT_VERSION}:${fingerprintSize}:${fingerprintHeadHash}:${fingerprintTailHash}${track}`;
 }
 
 /**

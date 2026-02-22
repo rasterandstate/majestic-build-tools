@@ -47,7 +47,8 @@ This repository does NOT:
 ## Versioning Rules
 
 - Breaking artifact changes require `ARTIFACT_FORMAT_VERSION` bump.
-- Cache key changes require version bump.
+- Cache key incorporates format version; bumps invalidate cache reuse.
+- Target profile semantics changes require format version bump.
 - Backend interface changes require minor or major version bump.
 
 ## Structure

@@ -22,7 +22,7 @@ describe('cacheSemantics', () => {
 		const key1 = buildCacheKey(input);
 		const key2 = buildCacheKey(input);
 		expect(key1).toBe(key2);
-		expect(key1).toBe('12345:abc123:def456');
+		expect(key1).toMatch(/^v\d+:12345:abc123:def456$/);
 	});
 
 	it('buildCacheKey includes track suffix when audioTrackIndex > 0', () => {
@@ -34,7 +34,7 @@ describe('cacheSemantics', () => {
 			audioTrackIndex: 2
 		};
 		const key = buildCacheKey(input);
-		expect(key).toBe('100:aa:bb:a2');
+		expect(key).toMatch(/^v\d+:100:aa:bb:a2$/);
 	});
 
 	it('buildCacheKey omits track suffix when audioTrackIndex is 0', () => {
@@ -46,7 +46,7 @@ describe('cacheSemantics', () => {
 			audioTrackIndex: 0
 		};
 		const key = buildCacheKey(input);
-		expect(key).toBe('100:aa:bb');
+		expect(key).toMatch(/^v\d+:100:aa:bb$/);
 	});
 
 	it('different fingerprints produce different keys', () => {
@@ -63,6 +63,17 @@ describe('cacheSemantics', () => {
 			kind: 'remux'
 		});
 		expect(key1).not.toBe(key2);
+	});
+
+	it('buildCacheKey includes ARTIFACT_FORMAT_VERSION (format bump invalidates cache)', () => {
+		const input = {
+			fingerprintSize: 1,
+			fingerprintHeadHash: 'a',
+			fingerprintTailHash: 'b',
+			kind: 'remux'
+		};
+		const key = buildCacheKey(input);
+		expect(key).toMatch(/^v1:/);
 	});
 
 	it('ARTIFACT_REUSE_CONDITIONS requires status ready', () => {
