@@ -1,0 +1,31 @@
+{
+  "name": "majestic-build-tools",
+  "version": "1.0.0",
+  "description": "Canonical, deterministic build pipeline for Majestic: adaptive build logic, artifact generation rules, cache semantics, lock semantics, backend execution interface.",
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./buildBackend": "./src/buildBackend.ts",
+    "./adaptivePipeline": "./src/adaptivePipeline.ts",
+    "./artifactSpec": "./src/artifactSpec.ts",
+    "./cachePolicy": "./src/cachePolicy.ts",
+    "./lockPolicy": "./src/lockPolicy.ts",
+    "./probe": "./src/probe.ts"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "esbuild": ">=0.25.0"
+    }
+  }
+}

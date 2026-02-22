@@ -1,5 +1,7 @@
 # majestic-build-tools
 
+Canonical, deterministic build pipeline for Majestic. Defines adaptive build logic, artifact generation rules, cache semantics, lock semantics, and the backend execution interface.
+
 ## Purpose
 
 Heavy media operations for Majestic. FFmpeg wrappers, adaptive build pipeline, artifact cache management, probe utilities, and cleanup of transient files. This is compute machinery, not application logic.
@@ -14,10 +16,19 @@ Heavy media operations for Majestic. FFmpeg wrappers, adaptive build pipeline, a
 
 ## Non-Responsibilities
 
-- **HTTP routing**: No request handling; invoked by majestic-server
-- **DB schema**: No database; server owns registry
-- **UI**: No user interface
-- **Identity logic**: No edition hash or fingerprint computation; uses majestic-identity-contract for identity inputs only
+This repository does NOT:
+
+- Perform streaming
+- Modify identity
+- Perform transcoding policy decisions
+- Implement licensing
+- Depend on accelerator
+
+## Determinism Guarantees
+
+- Same input + same target profile = identical artifact layout.
+- Artifact format is stable across minor releases.
+- Backend implementations must not alter output semantics.
 
 ## Architectural Principles
 
@@ -33,10 +44,28 @@ Heavy media operations for Majestic. FFmpeg wrappers, adaptive build pipeline, a
 - Abort/cancel must not leave partial artifacts that could be served
 - No HTTP, no DB, no UI
 
-## Dependencies
+## Versioning Rules
 
-- **majestic-identity-contract**: For identity inputs when needed (e.g. artifact naming)
-- **majestic-server**: Invokes build tools; provides paths and policy
+- Breaking artifact changes require `ARTIFACT_FORMAT_VERSION` bump.
+- Cache key changes require version bump.
+- Backend interface changes require minor or major version bump.
+
+## Structure
+
+```
+src/
+  buildBackend.ts   # Backend execution interface
+  adaptivePipeline.ts
+  artifactSpec.ts   # Artifact format, version, container, track rules
+  cachePolicy.ts    # Cache key rules, reuse conditions, eviction
+  lockPolicy.ts     # Lock acquisition, release, cancellation cleanup
+  probe.ts          # Probe result types
+  index.ts
+tests/
+  artifactParity.test.ts
+  cacheSemantics.test.ts
+  lockSemantics.test.ts
+```
 
 ## Failure Philosophy
 
@@ -44,12 +73,10 @@ Heavy media operations for Majestic. FFmpeg wrappers, adaptive build pipeline, a
 - Lock contention: wait or fail; never overwrite in-flight build
 - Cleanup on abort: remove partial files; update cache state
 
-## Current Status
+## Development
 
-Build pipeline. Artifact cache. Probe utilities. Invoked by majestic-server.
-
-## Future Constraints
-
-- Transcoding logic stays here; never in streaming path
-- No identity mutation; identity is server-owned
-- Determinism and locking are non-negotiable
+```bash
+pnpm install
+pnpm run check   # tsc --noEmit
+pnpm test
+```
