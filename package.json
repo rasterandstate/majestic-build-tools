@@ -4,6 +4,7 @@
   "description": "Canonical, deterministic build pipeline for Majestic: adaptive build logic, artifact generation rules, cache semantics, lock semantics, backend execution interface.",
   "type": "module",
   "main": "src/index.ts",
+  "packageManager": "pnpm@10.30.3",
   "exports": {
     ".": "./src/index.ts",
     "./buildBackend": "./src/buildBackend.ts",
