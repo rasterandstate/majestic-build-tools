@@ -42,6 +42,16 @@ export interface ArtifactResult {
 /** Abort signal for build cancellation. */
 export type AbortSignal = { addEventListener(type: 'abort', fn: () => void): void };
 
+/** Options passed to buildAdaptive. Server provides output path and optional callbacks. */
+export interface BuildOptions {
+	/** Output path for the artifact. Required for reference backend. */
+	outputPath: string;
+	/** Called when build process spawns (for PID tracking). Optional. */
+	onPid?: (pid: number) => void;
+	/** Called when build completes (success or failure) for cleanup. Optional. */
+	onClear?: () => void;
+}
+
 /**
  * Build backend interface.
  * Implementations must produce artifacts conforming to artifactSpec.
@@ -54,6 +64,7 @@ export interface BuildBackend {
 	buildAdaptive(
 		file: SourceInput,
 		targetProfile: TargetProfile,
-		abortSignal?: AbortSignal
+		abortSignal?: AbortSignal,
+		options?: BuildOptions
 	): Promise<ArtifactResult>;
 }

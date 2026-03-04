@@ -4,7 +4,14 @@
  * No dependency on concrete ffmpeg implementations.
  */
 
-import type { BuildBackend, SourceInput, TargetProfile, ArtifactResult, AbortSignal } from './buildBackend.js';
+import type {
+	BuildBackend,
+	SourceInput,
+	TargetProfile,
+	ArtifactResult,
+	AbortSignal,
+	BuildOptions
+} from './buildBackend.js';
 import { SUPPORTED_INPUT_CONTAINERS } from './artifactSpec.js';
 
 /** Validates source and delegates to backend. */
@@ -12,10 +19,11 @@ export async function buildForTarget(
 	backend: BuildBackend,
 	source: SourceInput,
 	targetProfile: TargetProfile,
-	abortSignal?: AbortSignal
+	abortSignal?: AbortSignal,
+	options?: BuildOptions
 ): Promise<ArtifactResult> {
 	validateSourceForBuild(source);
-	return backend.buildAdaptive(source, targetProfile, abortSignal);
+	return backend.buildAdaptive(source, targetProfile, abortSignal, options);
 }
 
 /** Validate source has required fields and supported container. */

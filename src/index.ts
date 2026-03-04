@@ -11,7 +11,8 @@ export type {
 	SourceInput,
 	TargetProfile,
 	ArtifactResult,
-	AbortSignal
+	AbortSignal,
+	BuildOptions
 } from './buildBackend.js';
 
 export type {
